@@ -266,3 +266,13 @@
     color: #94A3B8;
     font-size: 14px;
 }
+
+.terminal {
+    opacity: 0;
+    animation: fadeSlideLeft 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+.hero-image {
+    opacity: 0;
+    animation: fadeSlideRight 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
