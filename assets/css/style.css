@@ -1,3 +1,18 @@
+@import url("reset.css");
+@import url("variables.css");
+
+@import url("navbar.css");
+@import url("hero.css");
+@import url("about.css");
+@import url("explorer.css");
+@import url("projects.css");
+@import url("contact.css");
+@import url("footer.css");
+
+@import url("animations.css");
+@import url("responsive.css");
+
+
 * {
     margin: 0;
     padding: 0;
@@ -113,11 +128,9 @@ body {
     gap:80px;
 
 }
-
 .hero-content{
-
-    max-width:650px;
-
+    width:600px;
+    min-height:420px;
 }
 
 .hero-greeting{
@@ -222,7 +235,7 @@ body {
 
 .hero-image img{
 
-    width:360px;
+    width:340px;
 
     border-radius:20px;
 
@@ -305,3 +318,4 @@ body {
     }
 
 }
+
