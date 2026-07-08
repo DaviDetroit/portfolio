@@ -60,15 +60,29 @@
 }
 
 /* Foto */
-.profile-body img {
-    width: 180px;
-    border-radius: 16px;
-    margin-bottom: 30px;
-    transition: 0.3s;
+.profile-body img{
+
+    width:200px;
+    height:200px;
+
+    object-fit:cover;
+
+    border-radius:20px;
+
+    border:3px solid #2563EB;
+
+    margin-bottom:25px;
+
+    transition:.35s;
+
 }
 
-.profile-card:hover img {
-    transform: scale(1.03);
+.profile-card:hover img{
+
+    transform:scale(1.05);
+
+    box-shadow:0 0 35px rgba(37,99,235,.45);
+
 }
 
 /* Código */
@@ -275,4 +289,18 @@
 .hero-image {
     opacity: 0;
     animation: fadeSlideRight 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+
+.hero-description {
+    font-size: 18px;
+    line-height: 1.8;
+    color:#B8C1CC;
+
+    max-width: 620px;
+
+}
+
+.hero-description strong {
+    color:#3B82F6;
+    font-weight:600;
 }
