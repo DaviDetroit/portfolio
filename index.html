@@ -29,8 +29,8 @@
 
             <ul class="nav-links">
                 <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#explorer">Explorer</a></li>
-                <li><a href="#projetos">Projetos</a></li>
+                <li><a href="#explorer">Workspace</a></li>
+                <li><a href="#projetos">Codigo</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
             <div class="social-links">
@@ -420,7 +420,64 @@
         </section>
 
         <!-- CÓDIGO -->
-        <section id="tecnologias">
+        <section id="codigo">
+
+            <div class="container">
+
+                <div class="section-title">
+
+                    <span>03.</span>
+
+                    <div>
+
+                        <h2>Código</h2>
+
+                        <p>
+                            Execute pequenos scripts e veja o resultado no site.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="code-runner">
+
+                    <!-- Barra Superior -->
+                    <div class="code-header">
+
+                        <div class="code-tabs">
+
+                            <button class="tab active" data-snippet="party">party.js</button>
+                            <button class="tab" data-snippet="snow">snow.js</button>
+                            <button class="tab" data-snippet="fire">fire.js</button>
+                            <button class="tab" data-snippet="matrix">matrix.js</button>
+                            <button class="tab" data-snippet="reset">reset.js</button>
+
+                        </div>
+
+                        <button id="run-code">
+
+                            <i class="fa-solid fa-play"></i>
+
+                            Executar
+
+                        </button>
+
+                    </div>
+
+                    <!-- Código -->
+
+                    <div class="code-editor">
+
+                        <div class="line-numbers" id="line-numbers"></div>
+
+                        <pre><code id="code-content"></code></pre>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
 
@@ -436,19 +493,67 @@
 
         <!-- CONTATO -->
         <section id="contato">
+            <div class="container">
+                <div class="section-title">
+                    <span>04.</span>
+                    <div>
+                        <h2>Contato</h2>
+
+                        <p>Vamos transformar uma ideia em realidade</p>
+                        </p>
+
+                        </div>
+
+                    </div>
+                    <div class="contact-box">
+                        <h3>Gostou do meu trabalho?</h3>
+                        <p>
+                            Estou sempre aberto para novas oportunidades,
+                            projetos e desafios.
+                        </p>
+
+                        <div class="contact-links">
+                            <a href="https://github.com/DaviDetroit" target="_blank">
+                                <i class="fa-brands fa-github"></i>
+                                GitHub
+                            </a>
+
+                            <a href="https://www.linkedin.com/in/fernandes-davi/" target="_blank">
+                                <i class="fa-brands fa-linkedin"></i>
+                                Linkedin
+                            </a>
+                            <a href="davidetroitff11@gmail.com">
+                                <i class="fa-solid fa-envelope"></i>
+                                E-mail
+
+                            </a>
+                            </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
 
     </main>
 
     <!-- FOOTER -->
-    <footer>
-
+    <footer class="site-footer">
+        <p>© 2026 • Desenvolvido por Davi Alves com HTML, CSS e JavaScript.</p>
     </footer>
 
     <script src="assets/js/main.js"></script>
     <script src="assets/js/typing.js"></script>
     <script src="assets/js/explorer.js"></script>
+    <script src="assets/effects/party.js"></script>
+    <script src="assets/effects/snow.js"></script>
+    <script src="assets/effects/fire.js"></script>
+    <script src="assets/effects/matrix.js"></script>
+    <script src="assets/effects/reset.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="assets/js/code.js"></script>
 
 </body>
 
