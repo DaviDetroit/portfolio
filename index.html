@@ -41,9 +41,7 @@
                 <a href="https://www.linkedin.com/in/fernandes-davi/" target="_blank">
                     <i class="fa-brands fa-linkedin"></i>
                 </a>
-
             </div>
-
     </nav>
 
     </header>
@@ -493,48 +491,71 @@
 
         <!-- CONTATO -->
         <section id="contato">
+            <div class="contact-background">
+                <div class="blob blob-1"></div>
+
+                <div class="blob blob-2"></div>
+
+                <div class="blob blob-3"></div>
+            </div>
+
             <div class="container">
                 <div class="section-title">
                     <span>04.</span>
                     <div>
                         <h2>Contato</h2>
-
-                        <p>Vamos transformar uma ideia em realidade</p>
-                        </p>
-
-                        </div>
-
+                        <p>Tem uma ideia, projeto ou oportunidade? Vamos conversar.</p>
                     </div>
-                    <div class="contact-box">
-                        <h3>Gostou do meu trabalho?</h3>
-                        <p>
-                            Estou sempre aberto para novas oportunidades,
-                            projetos e desafios.
-                        </p>
-
-                        <div class="contact-links">
-                            <a href="https://github.com/DaviDetroit" target="_blank">
-                                <i class="fa-brands fa-github"></i>
-                                GitHub
-                            </a>
-
-                            <a href="https://www.linkedin.com/in/fernandes-davi/" target="_blank">
-                                <i class="fa-brands fa-linkedin"></i>
-                                Linkedin
-                            </a>
-                            <a href="davidetroitff11@gmail.com">
-                                <i class="fa-solid fa-envelope"></i>
-                                E-mail
-
-                            </a>
-                            </div>
-
-                    </div>
-
                 </div>
 
-            </div>
+                <div class="contact-container">
+                    <form id="contact-form">
+                        <div class="input-group">
+                            <label for="contact-name">Nome</label>
+                            <input
+                                type="text"
+                                id="contact-name"
+                                placeholder="Seu nome"
+                                required
+                            >
+                        </div>
 
+                        <div class="input-group">
+                            <label for="contact-email">E-mail</label>
+                            <input
+                                type="email"
+                                id="contact-email"
+                                placeholder="seuemail@gmail.com"
+                                required
+                            >
+                        </div>
+
+                        <div class="input-group">
+                            <label for="contact-message">Mensagem</label>
+                            <textarea
+                                id="contact-message"
+                                rows="7"
+                                placeholder="Escreva sua mensagem..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="send-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Enviar mensagem
+                        </button>
+                    </form>
+
+                    <div id="form-success" class="form-success" hidden>
+                        <svg class="success-check" viewBox="0 0 52 52">
+                            <circle class="success-check__circle" cx="26" cy="26" r="24" fill="none"/>
+                            <path class="success-check__mark" fill="none" d="M14 27l7 7 17-17"/>
+                        </svg>
+                        <p class="success-text">Mensagem enviada com sucesso!</p>
+                        <span class="success-subtext">Retorno em breve.</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
     </main>
@@ -554,6 +575,7 @@
     <script src="assets/effects/reset.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="assets/js/code.js"></script>
+    <script src="assets/js/contact.js"></script>
 
 </body>
 

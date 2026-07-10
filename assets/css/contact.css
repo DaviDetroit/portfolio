@@ -1,27 +1,201 @@
-#contato{
+/* ===========================
+   CONTATO
+=========================== */
 
-    position:relative;
+#contato {
+    position: relative;
+    overflow: hidden;
 
+    padding: 140px 24px;
+
+    background: linear-gradient(
+        180deg,
+        #091220 0%,
+        #071320 45%,
+        #081C2D 100%
+    );
 }
 
-#contato::before{
+/* Luzes de fundo */
 
+#contato::before{
     content:"";
 
     position:absolute;
+    inset:0;
 
-    top:-120px;
+    background:
+        radial-gradient(
+            circle at 15% 25%,
+            rgba(37,99,235,.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 75%,
+            rgba(14,165,233,.10),
+            transparent 40%
+        );
 
-    left:0;
+    pointer-events:none;
+    z-index:0;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+
+.contact-container{
+    position:relative;
+    z-index:2;
+
+    max-width:780px;
+    margin:40px auto 0;
+}
+
+.contact-title{
+    color:#E5E9F0;
+    font-size:20px;
+    font-weight:500;
+    margin:0 0 24px;
+}
+
+/* ===========================
+   FORMULÁRIO
+=========================== */
+
+#contact-form{
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.input-group label{
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:#7C8AA3;
+    font-weight:500;
+}
+
+.input-group input,
+.input-group textarea{
 
     width:100%;
 
-    height:120px;
+    padding:15px 18px;
 
-    background:linear-gradient(
-        to bottom,
-        transparent,
-        rgba(17,24,39,.9)
-    );
+    background:rgba(255,255,255,.03);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:12px;
+
+    color:#E5E9F0;
+
+    font-size:15px;
+
+    font-family:inherit;
+
+    transition:.25s;
 
 }
+
+.input-group input::placeholder,
+.input-group textarea::placeholder{
+
+    color:#64748B;
+
+}
+
+.input-group input:focus,
+.input-group textarea:focus{
+
+    outline:none;
+
+    border-color:#3B82F6;
+
+    background:rgba(255,255,255,.05);
+
+    box-shadow:0 0 0 4px rgba(59,130,246,.08);
+
+}
+
+.input-group textarea{
+
+    resize:none;
+
+    min-height:180px;
+
+    line-height:1.7;
+
+}
+
+/* ===========================
+   BOTÃO
+=========================== */
+
+.send-btn{
+
+    align-self:flex-end;
+
+    padding:14px 28px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563EB;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.send-btn:hover{
+
+    background:#3B82F6;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(37,99,235,.25);
+
+}
+
+.send-btn:active{
+
+    transform:translateY(0);
+
+}
+
+/* ===========================
+   BLOBS
+=========================== */
+
+.contact-background{
+
+    position:absolute;
+
+    inset:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+    z-index:1;
+
+}
+
+
