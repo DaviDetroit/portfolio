@@ -84,7 +84,10 @@ try {
 
     $mail->send();
 
-    
+    echo json_encode([
+        "success" => true,
+        "message" => "Mensagem enviada com sucesso!"
+    ]);
 
 } catch (Exception $e) {
 
