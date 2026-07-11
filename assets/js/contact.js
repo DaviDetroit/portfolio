@@ -6,12 +6,22 @@ const originalHTML = button.innerHTML;
 
 function buildParticles(qty) {
     let html = "";
+    const colors = ["#fff", "#BFDBFE", "#93C5FD"];
     for (let i = 0; i < qty; i++) {
         const angle = (Math.PI * 2 * i) / qty;
-        const distance = 28 + Math.random() * 10;
+        const distance = 32 + Math.random() * 20;
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
-        html += `<span class="particle" style="--x:${x}px; --y:${y}px;"></span>`;
+        const delay = (Math.random() * 0.05).toFixed(2);
+        html += `<span class="particle" style="--x:${x}px; --y:${y}px; background:${colors[i % colors.length]}; animation-delay:${delay}s;"></span>`;
+    }
+    return html;
+}
+
+function buildTrail(qty) {
+    let html = "";
+    for (let i = 0; i < qty; i++) {
+        html += `<span class="trail-dot" style="animation-delay:${i * 0.15}s;"></span>`;
     }
     return html;
 }
@@ -20,7 +30,10 @@ button.innerHTML = `
     <span class="btn-label">${originalHTML}</span>
     <div class="rocket-stage">
         <i class="fa-solid fa-rocket rocket"></i>
-        ${buildParticles(10)}
+        ${buildTrail(3)}
+        <span class="flash"></span>
+        <span class="ring"></span>
+        ${buildParticles(14)}
     </div>
 `;
 
@@ -33,7 +46,6 @@ function resetButton() {
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // trava a largura para o botão não "saltar" durante a animação
     button.style.width = button.offsetWidth + "px";
     button.disabled = true;
     button.classList.remove("is-error", "is-launch");
@@ -50,8 +62,6 @@ form.addEventListener("submit", async (event) => {
             })
         });
 
-        // lê como texto primeiro: evita o falso "erro" quando o PHP
-        // solta algum warning antes do JSON
         const raw = await response.text();
         let result;
 
@@ -66,7 +76,6 @@ form.addEventListener("submit", async (event) => {
             throw new Error(result.message || "send-failed");
         }
 
-        // sucesso -> explode o foguete
         button.classList.remove("is-sending");
         button.classList.add("is-launch");
 
@@ -74,7 +83,7 @@ form.addEventListener("submit", async (event) => {
             resetButton();
             showSuccess();
             form.reset();
-        }, 550);
+        }, 700);
 
     } catch (error) {
         console.error(error);
