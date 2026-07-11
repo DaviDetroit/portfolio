@@ -3,10 +3,7 @@
 declare(strict_types=1);
 
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-
-
+ini_set('display_errors', '1');
 
 use Dotenv\Dotenv;
 use PHPMailer\PHPMailer\Exception;
@@ -16,12 +13,22 @@ require __DIR__ . '/../vendor/autoload.php';
 
 header('Content-Type: application/json');
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
+
+
+function envValue(string $key): string
+{
+    $value = $_ENV[$key] ?? getenv($key);
+
+    return $value !== false ? (string) $value : '';
+}
 
 try {
 
-    $data = json_decode(file_get_contents("php://input"), true);
+    $data = json_decode(file_get_contents('php://input'), true);
 
     $name = trim($data['name'] ?? '');
     $email = trim($data['email'] ?? '');
@@ -38,35 +45,30 @@ try {
     $mail = new PHPMailer(true);
 
     $mail->isSMTP();
-
-    $mail->Host = $_ENV['MAIL_HOST'];
+    $mail->Host = envValue('MAIL_HOST');
     $mail->SMTPAuth = true;
-    $mail->Username = $_ENV['MAIL_USERNAME'];
-    $mail->Password = $_ENV['MAIL_PASSWORD'];
-
+    $mail->Username = envValue('MAIL_USERNAME');
+    $mail->Password = envValue('MAIL_PASSWORD');
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = (int) $_ENV['MAIL_PORT'];
+    $mail->Port = (int) envValue('MAIL_PORT');
 
     $mail->CharSet = 'UTF-8';
 
     $mail->setFrom(
-        $_ENV['MAIL_FROM'],
-        $_ENV['MAIL_FROM_NAME']
+        envValue('MAIL_FROM'),
+        envValue('MAIL_FROM_NAME')
     );
 
-    $mail->addAddress($_ENV['MAIL_TO']);
+    $mail->addAddress(envValue('MAIL_TO'));
 
-    $mail->addReplyTo(
-        $email,
-        $name
-    );
+    $mail->addReplyTo($email, $name);
 
     $mail->isHTML(true);
 
-    $mail->Subject = "Novo contato do portfólio";
+    $mail->Subject = 'Novo contato do portfólio';
 
     $mail->Body = "
-        <h2>Novo contato</h2>
+        <h2>Novo contato pelo portfólio</h2>
 
         <p><strong>Nome:</strong> {$name}</p>
 
@@ -85,8 +87,8 @@ try {
     $mail->send();
 
     echo json_encode([
-        "success" => true,
-        "message" => "Mensagem enviada com sucesso!"
+        'success' => true,
+        'message' => 'Mensagem enviada com sucesso!'
     ]);
 
 } catch (Exception $e) {
@@ -94,8 +96,8 @@ try {
     http_response_code(400);
 
     echo json_encode([
-        "success" => false,
-        "message" => $e->getMessage()
+        'success' => false,
+        'message' => $e->getMessage(),
+        'error' => isset($mail) ? $mail->ErrorInfo : null
     ]);
-
 }
