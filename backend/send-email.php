@@ -6,8 +6,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 use Dotenv\Dotenv;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,11 +16,9 @@ if (file_exists(__DIR__ . '/../.env')) {
     $dotenv->load();
 }
 
-
 function envValue(string $key): string
 {
     $value = $_ENV[$key] ?? getenv($key);
-
     return $value !== false ? (string) $value : '';
 }
 
@@ -42,49 +38,65 @@ try {
         throw new Exception('E-mail inválido.');
     }
 
-    $mail = new PHPMailer(true);
+    $apiKey = envValue('RESEND_API_KEY');
+    $mailFrom = envValue('MAIL_FROM');
+    $mailFromName = envValue('MAIL_FROM_NAME');
+    $mailTo = envValue('MAIL_TO');
 
-    $mail->isSMTP();
-    $mail->Host = envValue('MAIL_HOST');
-    $mail->SMTPAuth = true;
-    $mail->Username = envValue('MAIL_USERNAME');
-    $mail->Password = envValue('MAIL_PASSWORD');
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = (int) envValue('MAIL_PORT');
+    if ($apiKey === '' || $mailFrom === '' || $mailTo === '') {
+        throw new Exception('Configuração de e-mail incompleta no servidor.');
+    }
 
-    $mail->CharSet = 'UTF-8';
-
-    $mail->setFrom(
-        envValue('MAIL_FROM'),
-        envValue('MAIL_FROM_NAME')
-    );
-
-    $mail->addAddress(envValue('MAIL_TO'));
-
-    $mail->addReplyTo($email, $name);
-
-    $mail->isHTML(true);
-
-    $mail->Subject = 'Novo contato do portfólio';
-
-    $mail->Body = "
+    $htmlBody = "
         <h2>Novo contato pelo portfólio</h2>
-
         <p><strong>Nome:</strong> {$name}</p>
-
         <p><strong>E-mail:</strong> {$email}</p>
-
         <p><strong>Mensagem:</strong></p>
-
         <p>" . nl2br(htmlspecialchars($message)) . "</p>
     ";
 
-    $mail->AltBody =
+    $textBody =
         "Nome: {$name}\n\n" .
         "E-mail: {$email}\n\n" .
         "Mensagem:\n{$message}";
 
-    $mail->send();
+    $payload = [
+        'from'     => "{$mailFromName} <{$mailFrom}>",
+        'to'       => [$mailTo],
+        'reply_to' => $email,
+        'subject'  => 'Novo contato do portfólio',
+        'html'     => $htmlBody,
+        'text'     => $textBody,
+    ];
+
+    $ch = curl_init('https://api.resend.com/emails');
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($payload),
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . $apiKey,
+            'Content-Type: application/json',
+        ],
+        CURLOPT_TIMEOUT        => 15,
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        throw new Exception('Falha na conexão com o serviço de e-mail: ' . $curlError);
+    }
+
+    $result = json_decode($response, true);
+
+    if ($httpCode >= 400) {
+        $apiMessage = $result['message'] ?? 'Erro desconhecido do serviço de e-mail.';
+        throw new Exception($apiMessage);
+    }
 
     echo json_encode([
         'success' => true,
@@ -97,7 +109,6 @@ try {
 
     echo json_encode([
         'success' => false,
-        'message' => $e->getMessage(),
-        'error' => isset($mail) ? $mail->ErrorInfo : null
+        'message' => $e->getMessage()
     ]);
 }
