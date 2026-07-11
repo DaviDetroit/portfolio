@@ -95,7 +95,7 @@ form.addEventListener("submit", async (event) => {
             resetButton();
         }, 450);
 
-        alert("Não foi possível enviar sua mensagem. Tente novamente em alguns segundos.");
+        alert("Erro: " + error.message);
     }
 });
 
