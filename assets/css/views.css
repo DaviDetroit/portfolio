@@ -1,0 +1,14 @@
+.site-views{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    color:#94A3B8;
+    font-size:14px;
+    margin-top:18px;
+}
+
+.site-views i{
+    color:#60A5FA;
+}
