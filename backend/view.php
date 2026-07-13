@@ -20,16 +20,16 @@ try {
 
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-    if (stripos($userAgent, 'Edg') !== false) {
+    if (stripos($userAgent, 'OPR') !== false || stripos($userAgent, 'Opera') !== false) {
+        $browser = 'Opera';
+    } elseif (stripos($userAgent, 'Edg') !== false) {
         $browser = 'Edge';
-    } elseif (stripos($userAgent, 'Chrome') !== false) {
-        $browser = 'Chrome';
     } elseif (stripos($userAgent, 'Firefox') !== false) {
         $browser = 'Firefox';
+    } elseif (stripos($userAgent, 'Chrome') !== false) {
+        $browser = 'Chrome';
     } elseif (stripos($userAgent, 'Safari') !== false) {
         $browser = 'Safari';
-    } elseif (stripos($userAgent, 'Opera') !== false || stripos($userAgent, 'OPR') !== false) {
-        $browser = 'Opera';
     } else {
         $browser = 'Unknown';
     }
@@ -57,26 +57,35 @@ try {
         $device = 'Desktop';
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO visits (
-            session_id,
-            ip_hash,
-            page,
-            browser,
-            os,
-            device
-        )
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
+    if (!isset($_COOKIE['portfolio_visit'])) {
+        setcookie(
+            'portfolio_visit',
+            '1',
+            time() + 86400,
+            '/'
+        );
 
-    $stmt->execute([
-        $sessionId,
-        $ipHash,
-        $page,
-        $browser,
-        $os,
-        $device
-    ]);
+        $stmt = $pdo->prepare("
+            INSERT INTO visits (
+                session_id,
+                ip_hash,
+                page,
+                browser,
+                os,
+                device
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmt->execute([
+            $sessionId,
+            $ipHash,
+            $page,
+            $browser,
+            $os,
+            $device
+        ]);
+    }
 
     echo json_encode([
         "success" => true
