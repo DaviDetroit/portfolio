@@ -8,13 +8,12 @@ require __DIR__ . '/db.php';
 header('Content-Type: application/json');
 
 $stmt = $pdo->query("
-    SELECT total
-    FROM site_views
-    WHERE id = 1
+    SELECT COUNT(*) AS total
+    FROM visits
 ");
 
-$views = $stmt->fetch();
+$total = $stmt->fetch(PDO::FETCH_ASSOC);
 
 echo json_encode([
-    "views" => (int)$views["total"]
+    "views" => (int) $total["total"]
 ]);
