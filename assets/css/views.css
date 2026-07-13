@@ -12,3 +12,78 @@
 .site-views i{
     color:#60A5FA;
 }
+
+/* ===================== */
+/* VIEW EYE */
+/* ===================== */
+
+.view-eye{
+
+    width:30px;
+    height:21px;
+
+    overflow:visible;
+
+}
+
+.eye-lid{
+
+    fill:#0F172A;
+
+    transform-box:fill-box;
+    transition:transform .15s ease-in-out;
+
+}
+
+#lid-top{
+
+    transform-origin:top;
+    transform:scaleY(0);
+
+}
+
+#lid-bottom{
+
+    transform-origin:bottom;
+    transform:scaleY(0);
+
+}
+
+.view-eye.blinking #lid-top,
+.view-eye.blinking #lid-bottom{
+
+    transform:scaleY(1);
+
+}
+
+.eye-white{
+    fill:#0F172A;
+}
+
+.iris{
+
+    fill:#3B82F6;
+
+    transition:r .15s;
+
+}
+
+.pupil{
+
+    fill:#0b1120;
+
+}
+
+.shine{
+
+    fill:#93C5FD;
+
+}
+
+.site-views{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+}
