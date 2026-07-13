@@ -8,8 +8,8 @@ if (file_exists(__DIR__ . '/../.env')) {
 
 $host = $_ENV['DB_HOST'];
 $port = $_ENV['DB_PORT'];
-$db   = $_ENV['DB_DATABASE'];
-$user = $_ENV['DB_USERNAME'];
+$db   = $_ENV['DB_NAME'];
+$user = $_ENV['DB_USER'];
 $pass = $_ENV['DB_PASSWORD'];
 
 $pdo = new PDO(
