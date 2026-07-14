@@ -6,13 +6,11 @@ require __DIR__ . "/db.php";
 
 header("Content-Type: application/json");
 
-// Tempo mínimo (em segundos) entre duas contagens do mesmo visitante
-// 1800 = 30 minutos. Ajusta pro valor que fizer sentido pra ti.
+
 const COOLDOWN_SECONDS = 1800;
 
 $userAgent = $_SERVER["HTTP_USER_AGENT"] ?? "";
 
-// Ignora bots, health checks e crawlers de link preview
 if (isBot($userAgent)) {
     echo json_encode([
         "success" => true,
@@ -40,22 +38,23 @@ if ($visitorId === "") {
     );
 }
 
-$page = $_SERVER["HTTP_REFERER"] ?? "home";
+
+$page = $_POST["page"] ?? $_GET["page"] ?? "home";
+$referer = $_SERVER["HTTP_REFERER"] ?? null;
 $ip = getRealIp();
 
 $browser = getBrowser($userAgent);
 $os = getOS($userAgent);
 $device = getDevice($userAgent);
 
-// Se não é visitante novo, verifica se já passou o cooldown
 $shouldCount = true;
 
 if (!$isNewVisitor) {
     $stmt = $pdo->prepare("
-        SELECT created_at
+        SELECT visited_at
         FROM visits
         WHERE visitor_id = ?
-        ORDER BY created_at DESC
+        ORDER BY visited_at DESC
         LIMIT 1
     ");
     $stmt->execute([$visitorId]);
@@ -72,18 +71,26 @@ if (!$isNewVisitor) {
 }
 
 if ($shouldCount) {
+    $location = getLocationByIp($ip);
+
     $stmt = $pdo->prepare("
         INSERT INTO visits
         (
             visitor_id,
             ip,
+            country,
+            city,
             browser,
             os,
             device,
-            page
+            page,
+            referer
         )
         VALUES
         (
+            ?,
+            ?,
+            ?,
             ?,
             ?,
             ?,
@@ -96,18 +103,65 @@ if ($shouldCount) {
     $stmt->execute([
         $visitorId,
         $ip,
+        $location["country"],
+        $location["city"],
         $browser,
         $os,
         $device,
-        $page
+        $page,
+        $referer
     ]);
+}
+
+function getLocationByIp(string $ip): array
+{
+    $empty = ["country" => null, "city" => null];
+
+    if ($ip === '' || isPrivateIp($ip)) {
+        return $empty;
+    }
+
+    $context = stream_context_create([
+        "http" => ["timeout" => 2] 
+    ]);
+
+    $response = @file_get_contents(
+        "https://ipwho.is/{$ip}",
+        false,
+        $context
+    );
+
+    if ($response === false) {
+        return $empty;
+    }
+
+    $data = json_decode($response, true);
+
+    if (!is_array($data) || empty($data["success"])) {
+        return $empty;
+    }
+
+    return [
+        "country" => $data["country"] ?? null,
+        "city" => $data["city"] ?? null
+    ];
+}
+
+function isPrivateIp(string $ip): bool
+{
+    return filter_var(
+        $ip,
+        FILTER_VALIDATE_IP,
+        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+    ) === false;
 }
 
 function getRealIp(): string
 {
+    
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($ips[0]); 
+        return trim($ips[0]);
     }
 
     return $_SERVER['REMOTE_ADDR'] ?? '';
