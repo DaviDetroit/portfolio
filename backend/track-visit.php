@@ -6,10 +6,15 @@ require __DIR__ . "/db.php";
 
 header("Content-Type: application/json");
 
+
+const COOLDOWN_SECONDS = 1800;
+
 $visitorId = $_COOKIE["visitor_id"] ?? "";
+$isNewVisitor = false;
 
 if ($visitorId === "") {
     $visitorId = bin2hex(random_bytes(32));
+    $isNewVisitor = true;
 
     setcookie(
         "visitor_id",
@@ -23,44 +28,68 @@ if ($visitorId === "") {
 }
 
 $page = $_SERVER["HTTP_REFERER"] ?? "home";
-
 $ip = $_SERVER["REMOTE_ADDR"] ?? "";
-
 $userAgent = $_SERVER["HTTP_USER_AGENT"] ?? "";
 
 $browser = getBrowser($userAgent);
 $os = getOS($userAgent);
 $device = getDevice($userAgent);
 
-$stmt = $pdo->prepare("
-    INSERT INTO visits
-    (
-        visitor_id,
-        ip,
-        browser,
-        os,
-        device,
-        page
-    )
-    VALUES
-    (
-        ?,
-        ?,
-        ?,
-        ?,
-        ?,
-        ?
-    )
-");
+// Se não é visitante novo, verifica se já passou o cooldown
+$shouldCount = true;
 
-$stmt->execute([
-    $visitorId,
-    $ip,
-    $browser,
-    $os,
-    $device,
-    $page
-]);
+if (!$isNewVisitor) {
+    $stmt = $pdo->prepare("
+        SELECT created_at
+        FROM visits
+        WHERE visitor_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+    ");
+    $stmt->execute([$visitorId]);
+    $lastVisit = $stmt->fetchColumn();
+
+    if ($lastVisit !== false) {
+        $lastVisitTime = strtotime($lastVisit);
+        $secondsSinceLastVisit = time() - $lastVisitTime;
+
+        if ($secondsSinceLastVisit < COOLDOWN_SECONDS) {
+            $shouldCount = false;
+        }
+    }
+}
+
+if ($shouldCount) {
+    $stmt = $pdo->prepare("
+        INSERT INTO visits
+        (
+            visitor_id,
+            ip,
+            browser,
+            os,
+            device,
+            page
+        )
+        VALUES
+        (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+    ");
+
+    $stmt->execute([
+        $visitorId,
+        $ip,
+        $browser,
+        $os,
+        $device,
+        $page
+    ]);
+}
 
 function getBrowser(string $userAgent): string
 {
@@ -94,5 +123,6 @@ function getDevice(string $userAgent): string
 }
 
 echo json_encode([
-    "success" => true
+    "success" => true,
+    "counted" => $shouldCount
 ]);
