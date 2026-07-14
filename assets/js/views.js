@@ -1,6 +1,6 @@
 async function loadViews() {
 
-    await fetch("/backend/view.php");
+    await fetch("/backend/track-visit.php");
 
     const response = await fetch("/backend/get-views.php");
 

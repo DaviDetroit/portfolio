@@ -12,9 +12,11 @@ header('Content-Type: application/json');
 try {
 
     $sessionId = session_id();
+    $visitorId = $sessionId;
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-    $ipHash = hash('sha256', $ip);
+    $country = null;
+    $city = null;
 
     $page = $_SERVER['HTTP_REFERER'] ?? '/';
 
@@ -67,23 +69,27 @@ try {
 
         $stmt = $pdo->prepare("
             INSERT INTO visits (
-                session_id,
-                ip_hash,
-                page,
+                visitor_id,
+                ip,
+                country,
+                city,
                 browser,
                 os,
-                device
+                device,
+                page
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $stmt->execute([
-            $sessionId,
-            $ipHash,
-            $page,
+            $visitorId,
+            $ip,
+            $country,
+            $city,
             $browser,
             $os,
-            $device
+            $device,
+            $page
         ]);
     }
 
