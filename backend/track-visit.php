@@ -6,8 +6,21 @@ require __DIR__ . "/db.php";
 
 header("Content-Type: application/json");
 
-
+// Tempo mínimo (em segundos) entre duas contagens do mesmo visitante
+// 1800 = 30 minutos. Ajusta pro valor que fizer sentido pra ti.
 const COOLDOWN_SECONDS = 1800;
+
+$userAgent = $_SERVER["HTTP_USER_AGENT"] ?? "";
+
+// Ignora bots, health checks e crawlers de link preview
+if (isBot($userAgent)) {
+    echo json_encode([
+        "success" => true,
+        "counted" => false,
+        "reason" => "bot"
+    ]);
+    exit;
+}
 
 $visitorId = $_COOKIE["visitor_id"] ?? "";
 $isNewVisitor = false;
@@ -28,8 +41,7 @@ if ($visitorId === "") {
 }
 
 $page = $_SERVER["HTTP_REFERER"] ?? "home";
-$ip = $_SERVER["REMOTE_ADDR"] ?? "";
-$userAgent = $_SERVER["HTTP_USER_AGENT"] ?? "";
+$ip = getRealIp();
 
 $browser = getBrowser($userAgent);
 $os = getOS($userAgent);
@@ -89,6 +101,48 @@ if ($shouldCount) {
         $device,
         $page
     ]);
+}
+
+function getRealIp(): string
+{
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return trim($ips[0]); 
+    }
+
+    return $_SERVER['REMOTE_ADDR'] ?? '';
+}
+
+function isBot(string $userAgent): bool
+{
+    if ($userAgent === '') {
+        return true;
+    }
+
+    $botSignatures = [
+        'bot',
+        'crawl',
+        'spider',
+        'headless',
+        'facebookexternalhit',
+        'WhatsApp',
+        'Discordbot',
+        'Slackbot',
+        'TelegramBot',
+        'Preview',
+        'curl',
+        'python-requests',
+        'axios',
+        'Go-http-client'
+    ];
+
+    foreach ($botSignatures as $signature) {
+        if (stripos($userAgent, $signature) !== false) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function getBrowser(string $userAgent): string
