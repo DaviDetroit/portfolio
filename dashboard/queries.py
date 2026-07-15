@@ -1,5 +1,4 @@
 import pandas as pd
-from database import connection
 from database import get_connection
 
 def execute_procedure(name, params=None):
@@ -7,6 +6,7 @@ def execute_procedure(name, params=None):
 
     try:
         with connection.cursor() as cursor:
+
             if params:
                 cursor.execute(f"CALL {name}(%s)", params)
             else:
