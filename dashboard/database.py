@@ -1,14 +1,18 @@
 import os
 import pymysql
-from dotenv import load_dotenv
+import streamlit as st
 
-load_dotenv()
+
+def _get_config(key):
+    if key in st.secrets:
+        return st.secrets[key]
+    return os.getenv(key)
+
 
 connection = pymysql.connect(
-    host=os.getenv("DB_HOST"),
-    port=int(os.getenv("DB_PORT")),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_NAME"),
-    cursorclass=pymysql.cursors.DictCursor
+    host=_get_config("DB_HOST"),
+    port=int(_get_config("DB_PORT")),
+    user=_get_config("DB_USER"),
+    password=_get_config("DB_PASSWORD"),
+    database=_get_config("DB_NAME"),
 )
