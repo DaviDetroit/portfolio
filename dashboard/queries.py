@@ -2,11 +2,17 @@ import pandas as pd
 from database import connection
 
 
-def execute_procedure(name):
+def execute_procedure(name, params=None):
     with connection.cursor() as cursor:
-        cursor.execute(f"CALL {name}()")
+        if params:
+            cursor.execute(f"CALL {name}(%s)", params)
+        else:
+            cursor.execute(f"CALL {name}()")
 
         rows = cursor.fetchall()
+
+        while cursor.nextset():
+            pass
 
         connection.commit()
 
@@ -21,8 +27,8 @@ def unique_visitors():
     return execute_procedure("sp_visitantes_unicos")
 
 
-def visits_by_day():
-    return execute_procedure("sp_visitas_por_dia")
+def visits_by_day(days=30):
+    return execute_procedure("sp_visitas_periodo", (days,))
 
 
 def browsers():
