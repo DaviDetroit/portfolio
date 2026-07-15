@@ -1,12 +1,14 @@
 import os
 import pymysql
 import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
 
 def _get_config(key):
-    if key in st.secrets:
-        return st.secrets[key]
-    return os.getenv(key)
+    try:
+        return st.secrets.get(key, os.getenv(key))
+    except StreamlitSecretNotFoundError:
+        return os.getenv(key)
 
 
 connection = pymysql.connect(
@@ -15,4 +17,7 @@ connection = pymysql.connect(
     user=_get_config("DB_USER"),
     password=_get_config("DB_PASSWORD"),
     database=_get_config("DB_NAME"),
+    cursorclass=pymysql.cursors.DictCursor,
+    charset="utf8mb4",
+    autocommit=True,
 )
