@@ -27,6 +27,16 @@ st.set_page_config(
 )
 
 st.markdown("""
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+.block-container{
+    padding-top:2rem;
+    padding-bottom:2rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
 <style>
 
 .block-container{
@@ -76,7 +86,6 @@ with col1:
         total_visits()["total"][0],
         "👁️"
     )
-
 with col2:
     metric_card(
         "Visitantes",
