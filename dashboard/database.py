@@ -11,13 +11,14 @@ def _get_config(key):
         return os.getenv(key)
 
 
-connection = pymysql.connect(
-    host=_get_config("DB_HOST"),
-    port=int(_get_config("DB_PORT")),
-    user=_get_config("DB_USER"),
-    password=_get_config("DB_PASSWORD"),
-    database=_get_config("DB_NAME"),
-    cursorclass=pymysql.cursors.DictCursor,
-    charset="utf8mb4",
-    autocommit=True,
-)
+def get_connection():
+    return pymysql.connect(
+        host=_get_config("DB_HOST"),
+        port=int(_get_config("DB_PORT")),
+        user=_get_config("DB_USER"),
+        password=_get_config("DB_PASSWORD"),
+        database=_get_config("DB_NAME"),
+        cursorclass=pymysql.cursors.DictCursor,
+        charset="utf8mb4",
+        autocommit=True,
+    )

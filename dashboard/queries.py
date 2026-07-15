@@ -1,22 +1,26 @@
 import pandas as pd
 from database import connection
-
+from database import get_connection
 
 def execute_procedure(name, params=None):
-    with connection.cursor() as cursor:
-        if params:
-            cursor.execute(f"CALL {name}(%s)", params)
-        else:
-            cursor.execute(f"CALL {name}()")
+    connection = get_connection()
 
-        rows = cursor.fetchall()
+    try:
+        with connection.cursor() as cursor:
+            if params:
+                cursor.execute(f"CALL {name}(%s)", params)
+            else:
+                cursor.execute(f"CALL {name}()")
 
-        while cursor.nextset():
-            pass
+            rows = cursor.fetchall()
 
-        connection.commit()
+            while cursor.nextset():
+                pass
 
-    return pd.DataFrame(rows)
+        return pd.DataFrame(rows)
+
+    finally:
+        connection.close()
 
 
 def total_visits():
