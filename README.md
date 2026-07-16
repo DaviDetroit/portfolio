@@ -213,6 +213,8 @@ Desenvolvedor Backend e estudante de Banco de Dados, apaixonado por tecnologia, 
 
 💼 **LinkedIn:** https://www.linkedin.com/in/fernandes-davi/
 
+🌐 **Portfólio:** https://portfolio-production-ea10.up.railway.app
+
 ---
 
 <div align="center">
