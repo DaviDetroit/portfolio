@@ -19,7 +19,7 @@ if (isBot($userAgent)) {
     ]);
     exit;
 }
-
+ 
 $visitorId = $_COOKIE["visitor_id"] ?? "";
 $isNewVisitor = false;
 
@@ -51,22 +51,17 @@ $shouldCount = true;
 
 if (!$isNewVisitor) {
     $stmt = $pdo->prepare("
-        SELECT visited_at
+        SELECT TIMESTAMPDIFF(SECOND, visited_at, NOW()) AS seconds_ago
         FROM visits
         WHERE visitor_id = ?
         ORDER BY visited_at DESC
         LIMIT 1
     ");
     $stmt->execute([$visitorId]);
-    $lastVisit = $stmt->fetchColumn();
+    $secondsSinceLastVisit = $stmt->fetchColumn();
 
-    if ($lastVisit !== false) {
-        $lastVisitTime = strtotime($lastVisit);
-        $secondsSinceLastVisit = time() - $lastVisitTime;
-
-        if ($secondsSinceLastVisit < COOLDOWN_SECONDS) {
-            $shouldCount = false;
-        }
+    if ($secondsSinceLastVisit !== false && (int)$secondsSinceLastVisit < COOLDOWN_SECONDS) {
+        $shouldCount = false;
     }
 }
 
